@@ -15,7 +15,7 @@ import javafx.fxml.Initializable;
  *
  * @author euclasio
  */
-public class BoardController implements Initializable {
+public class MenuController implements Initializable {
 
     /**
      * Initializes the controller class.
@@ -26,7 +26,8 @@ public class BoardController implements Initializable {
     }
     
     @FXML
-    private void switchToMenu() throws IOException {
-        App.setRoot("menu");
-    }     
+    private void switchToBoard() throws IOException {
+        App.setRoot("board");
+    }    
+    
 }
