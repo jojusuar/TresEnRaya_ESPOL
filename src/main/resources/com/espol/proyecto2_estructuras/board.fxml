@@ -1,11 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
 
-<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.espol.proyecto2_estructuras.BoardController">
-    
+
+<AnchorPane id="AnchorPane" prefHeight="600.0" prefWidth="1200.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/21" fx:controller="com.espol.proyecto2_estructuras.BoardController">
+   <children>
+      <HBox prefHeight="600.0" prefWidth="1200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <VBox prefHeight="600.0" prefWidth="550.0">
+               <children>
+                  <HBox alignment="CENTER" prefHeight="51.0" prefWidth="550.0" spacing="40.0">
+                     <children>
+                        <Button mnemonicParsing="false" text="Abandonar" />
+                        <Button mnemonicParsing="false" text="Guardar estado actual" />
+                        <Button mnemonicParsing="false" text="Pista" />
+                     </children>
+                  </HBox>
+               </children>
+            </VBox>
+            <VBox alignment="TOP_CENTER" prefHeight="600.0" prefWidth="650.0">
+               <children>
+                  <Label text="POSIBLES RESPUESTAS DEL SISTEMA (RIESGO MINIMIZADO)" />
+               </children>
+            </VBox>
+         </children>
+      </HBox>
+   </children>
 </AnchorPane>
