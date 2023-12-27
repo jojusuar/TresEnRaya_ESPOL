@@ -28,7 +28,12 @@ public class Tree<E>{
     }
     
     public void setRoot(E content){
+        if(isEmpty()){
+            setRootNode(new TreeNode<>(content));
+        }
+        else{
         root.setContent(content);
+        }
     }
     
     private TreeNode<E> getRootNode(){
