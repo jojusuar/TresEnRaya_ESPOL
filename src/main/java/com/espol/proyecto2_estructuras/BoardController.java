@@ -8,6 +8,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Random;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -26,7 +27,7 @@ import modelo.Symbol;
  * @author euclasio
  */
 public class BoardController implements Initializable {
-    
+
     @FXML
     private Button button1;
 
@@ -56,110 +57,135 @@ public class BoardController implements Initializable {
 
     @FXML
     private FlowPane tableroVisible;
-    
+
     private Board tableroActual;
+
+    private Button[][] grid;
+
+    private Symbol cross;
+
+    private Symbol circle;
+
+    private boolean crossTurn;
+
+    private boolean againstComputer;
+
     /**
      * Initializes the controller class.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
-        //Temporalmente, la carga se realiza al presionar la primera casilla
-        //y se limpia con la segunda
-        Board prueba = new Board();
-        prueba.getCells()[0][0] = new Cross();
-        prueba.getCells()[0][1] = new Circle();
-        prueba.getCells()[0][2] = new Cross();
-        prueba.getCells()[1][1] = new Cross();
-        prueba.getCells()[1][2] = new Circle();
-        prueba.getCells()[2][1] = new Circle();
-        tableroActual = prueba;
+        //Ahora se inicializan los botones con una referencia a su posicion
+        //en el tablero, y se guardan en una matriz gemela de botones que permite
+        //controlar tablero y botones con los mismos indices. Ya esta definida la alternacion entre X y O.
+        //Lo siguiente es bloquear los botones que ya tienen simbolo, para solo poder presionar los vacios.
+        //Dejo tambien agregado el atributo againstComputer, para mantener el comportamiento actual del programa
+        //cuando se seleccione una opcion de jugar contra otro humano en el menu de pre-juego
+        grid = new Button[3][3];
+        Random random = new Random();
+        crossTurn = random.nextBoolean();
+        tableroActual = new Board();
+        cross = new Cross();
+        circle = new Circle();
+        setButtonPos(button1, 0, 0);
+        setButtonPos(button2, 1, 0);
+        setButtonPos(button3, 2, 0);
+        setButtonPos(button4, 0, 1);
+        setButtonPos(button5, 1, 1);
+        setButtonPos(button6, 2, 1);
+        setButtonPos(button7, 0, 2);
+        setButtonPos(button8, 1, 2);
+        setButtonPos(button9, 2, 2);
     }
-    
+
     @FXML
     private void switchToMenu() throws IOException {
         App.setRoot("menu");
     }
-    
-    @FXML
-    public void loadBoard(){
-        wipe();
-        Board board = tableroActual;
-        int cont = 0;
-        Symbol[][] celdas = board.getCells();
-        for (int i = 0; i < celdas.length; i++) {
-            for (int j = 0; j < celdas[1].length; j++) {
-                Symbol s = celdas[i][j];
-                if(celdas[i][j] instanceof Circle){
-                    System.out.print("O  ");
-                    //System.out.print(cont+"  ");
-                    Circle c = (Circle) s;
-                    try {
-                        //dependiendo la version, el "src/" es necesario o no
-                        //si no compila, eliminarlo
-                        FileInputStream input = new FileInputStream("src/"+c.getPath());
-                        Image imagen = new Image(input);
-                        ImageView imageView = new ImageView(imagen);
-                        imageView.setFitWidth(80);
-                        imageView.setFitHeight(80);
-                        getButton(cont).setGraphic(imageView);
-                    } catch (FileNotFoundException ex) {
-                        ex.printStackTrace();
-                    }
-                    cont++;
-                }else if(celdas[i][j] instanceof Cross){
-                    System.out.print("X  ");
-                    //System.out.print(cont+"  ");
-                    Cross c = (Cross) s;
-                    try {
-                        FileInputStream input = new FileInputStream("src/"+c.getPath());
-                        Image imagen = new Image(input);
-                        ImageView imageView = new ImageView(imagen);
-                        imageView.setFitWidth(80);
-                        imageView.setFitHeight(80);
-                        getButton(cont).setGraphic(imageView);
-                    } catch (FileNotFoundException ex) {
-                        ex.printStackTrace();
-                    }
-                    cont++;
-                }else{
-                    System.out.print("   ");
-                }
-            }
-            System.out.println(" ");
-            cont++;
-        }
-    }
-    
-    public Button getButton(int i){
-        //podria hacerse con Switch cases pero da problemas
-        if(i == 0){
+
+    ////creo que no se necesita con los cambios que hice a la logica
+    public Button getButton(int i) {
+        if (i == 0) {
             return button1;
-        }else if(i == 1){
+        } else if (i == 1) {
             return button2;
-        }else if(i == 2){
+        } else if (i == 2) {
             return button3;
-        }else if(i == 3){
+        } else if (i == 3) {
             return button4;
-        }else if(i == 4){
+        } else if (i == 4) {
             return button5;
-        }else if(i == 5){
+        } else if (i == 5) {
             return button6;
-        }else if(i == 6){
+        } else if (i == 6) {
             return button7;
-        }else if(i == 7){
+        } else if (i == 7) {
             return button8;
-        }else if(i == 8){
+        } else if (i == 8) {
             return button9;
         }
         return null;
     }
-    
-     @FXML
-    public void wipe(){
+
+    @FXML
+    public void input() {
+        System.out.println();
+    }
+
+    public void showBoard() {
+        Symbol[][] cells = tableroActual.getCells();
+        for (int i = 0; i < cells.length; i++) {
+            for (int j = 0; j < cells.length; j++) {
+                if (cells[i][j] != null) {
+                    Symbol s = cells[i][j];
+                    if (s instanceof Circle) {
+                        Circle c = (Circle) s;
+                        setSymbol(c, i, j);
+                    } else if (s instanceof Cross) {
+                        Cross c = (Cross) s;
+                        setSymbol(c, i, j);
+                    }
+                }
+            }
+        }
+    }
+
+    public void setButtonPos(Button b, int x, int y) {
+        grid[x][y] = b;
+        b.setOnAction(ev -> {
+            Symbol symbol = cross;
+            if (!crossTurn) {
+                symbol = circle;
+            }
+            tableroActual.getCells()[x][y] = symbol;
+            crossTurn = !crossTurn;
+            System.out.println("insertando " + symbol + " en el boton " + x + "x" + y);
+            showBoard();
+        });
+    }
+
+    private void setSymbol(Symbol c, int i, int j) {
+        try {
+            //dependiendo la version, el "src/" es necesario o no
+            //si no compila, eliminarlo
+            FileInputStream input = new FileInputStream("src/" + c.getPath());
+            Image imagen = new Image(input);
+            ImageView imageView = new ImageView(imagen);
+            imageView.setFitWidth(80);
+            imageView.setFitHeight(80);
+            grid[i][j].setGraphic(imageView);
+        } catch (FileNotFoundException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    ///creo que innecesario tambien
+    @FXML
+    public void wipe() {
         for (int i = 0; i < 9; i++) {
             getButton(i).setGraphic(null);
         }
     }
-    
+
 }

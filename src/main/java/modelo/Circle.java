@@ -13,4 +13,9 @@ public class Circle extends Symbol{
     public Circle() {
         super("main/resources/assets/circle.png");
     }  
+    
+    @Override
+    public String toString() {
+        return "O";
+    }
 }
