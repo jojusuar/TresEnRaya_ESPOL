@@ -7,10 +7,6 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import modelo.Board;
-import modelo.Circle;
-import modelo.Cross;
-import modelo.Symbol;
 
 /**
  * JavaFX App

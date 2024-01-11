@@ -13,4 +13,10 @@ public class Cross extends Symbol {
     public Cross() {
         super("main/resources/assets/cross.png");
     }
+
+    @Override
+    public String toString() {
+        return "X";
+    }
+    
 }
