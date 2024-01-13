@@ -16,6 +16,7 @@ public class MinMaxer {
 
     private static Tree<Board> possibilities;
     private static List<Tree<Board>> history = new LinkedList<>();
+
     public static Tree<Board> minmax(Board current) {
         possibilities = new Tree<>();
         possibilities.setCmp(Board.comparator());
@@ -48,6 +49,7 @@ public class MinMaxer {
                             }
                         }
                     }
+                    //se me ocurre iterar sobre los hijos de cada tablero de nivel 1 y reemplazarlo cada vez que un hijo tenga utilidad menor
                 }
             }
         }
