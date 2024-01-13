@@ -25,7 +25,7 @@ public class Memory {
         boards.add(board);
     }
 
-    public static void deleteUser(Board board) {
+    public static void deleteBoard(Board board) {
         boards.remove(board);
     }
 
