@@ -23,6 +23,7 @@ import javafx.scene.layout.FlowPane;
 import modelo.Board;
 import modelo.Circle;
 import modelo.Cross;
+import modelo.GameMaster;
 import modelo.Symbol;
 import util.Memory;
 
@@ -71,8 +72,6 @@ public class BoardController implements Initializable {
 
     private Symbol circle;
 
-    private boolean crossTurn;
-
     private boolean againstComputer;
 
     /**
@@ -89,7 +88,7 @@ public class BoardController implements Initializable {
 
         grid = new Button[3][3];
         Random random = new Random();
-        crossTurn = random.nextBoolean();
+        GameMaster.setCrossTurn(random.nextBoolean());
         cross = new Cross();
         circle = new Circle();
         setButtonPos(button1, 0, 0);
@@ -106,11 +105,6 @@ public class BoardController implements Initializable {
     @FXML
     private void switchToMenu() throws IOException {
         App.setRoot("menu");
-    }
-
-    @FXML
-    public void input() {
-        System.out.println();
     }
 
     public void showBoard() {
@@ -139,18 +133,18 @@ public class BoardController implements Initializable {
                 return;
             }
             Symbol symbol = cross;
-            if (!crossTurn) {
+            if (!GameMaster.isCrossTurn()) {
                 symbol = circle;
             }
             tableroActual.getCells()[x][y] = symbol;
-            crossTurn = !crossTurn;
+            GameMaster.setCrossTurn(!GameMaster.isCrossTurn());
             showBoard();
             checkGame();
         });
     }
 
     private void checkGame() {
-        int winner = tableroActual.checkBoard();
+        int winner = GameMaster.checkBoard(tableroActual);
         switch (winner) {
             case 1:
                 endGame("Ganador: CIRCULO");
@@ -192,32 +186,9 @@ public class BoardController implements Initializable {
             ex.printStackTrace();
         }
     }
-    ////creo que no se necesita con los cambios que hice a la logica
-    public Button getButton(int i) {
-        if (i == 0) {
-            return button1;
-        } else if (i == 1) {
-            return button2;
-        } else if (i == 2) {
-            return button3;
-        } else if (i == 3) {
-            return button4;
-        } else if (i == 4) {
-            return button5;
-        } else if (i == 5) {
-            return button6;
-        } else if (i == 6) {
-            return button7;
-        } else if (i == 7) {
-            return button8;
-        } else if (i == 8) {
-            return button9;
-        }
-        return null;
-    }
-    
+
     @FXML
-    public void saveGame(){
+    public void saveGame() {
         TextInputDialog dialog = new TextInputDialog("Guardar tablero actual");
         dialog.setTitle("Guardar");
         dialog.setHeaderText("Ingrese el nombre de la partida a guardar:");
@@ -226,16 +197,8 @@ public class BoardController implements Initializable {
         Memory.addBoard(tableroActual);
         Memory.save();
     }
-    
+
     public static void setTableroActual(Board b) {
         tableroActual = b;
     }
-    ///creo que innecesario tambien
-    @FXML
-    public void wipe() {
-        for (int i = 0; i < 9; i++) {
-            getButton(i).setGraphic(null);
-        }
-    }
-
 }

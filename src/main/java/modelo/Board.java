@@ -26,6 +26,10 @@ public class Board {
         this.utility = utility;
     }
 
+    public Comparator<Symbol> getCmp() {
+        return cmp;
+    }
+
     public String getDescription() {
         return description;
     }
@@ -44,44 +48,7 @@ public class Board {
         return cells;
     }
 
-    public int checkBoard() {
-        Symbol s00 = cells[0][0];
-        Symbol s10 = cells[1][0];
-        Symbol s20 = cells[2][0];
-        Symbol s01 = cells[0][1];
-        Symbol s11 = cells[1][1];
-        Symbol s21 = cells[2][1];
-        Symbol s02 = cells[0][2];
-        Symbol s12 = cells[1][2];
-        Symbol s22 = cells[2][2];
-        if (cmp.compare(s00, s10) != 0 && cmp.compare(s10, s20) != 0 && cmp.compare(s00, s10) == cmp.compare(s10, s20)) {
-            return cmp.compare(s00, s10);
-        }
-        if (cmp.compare(s01, s11) != 0 && cmp.compare(s11, s21) != 0 && cmp.compare(s01, s11) == cmp.compare(s11, s21)) {
-            return cmp.compare(s01, s11);
-        }
-        if (cmp.compare(s02, s12) != 0 && cmp.compare(s12, s22) != 0 && cmp.compare(s02, s12) == cmp.compare(s12, s22)) {
-            return cmp.compare(s02, s12);
-        }
-        if (cmp.compare(s00, s01) != 0 && cmp.compare(s01, s02) != 0 && cmp.compare(s00, s01) == cmp.compare(s01, s02)) {
-            return cmp.compare(s00, s01);
-        }
-        if (cmp.compare(s10, s11) != 0 && cmp.compare(s11, s12) != 0 && cmp.compare(s10, s11) == cmp.compare(s11, s12)) {
-            return cmp.compare(s10, s11);
-        }
-        if (cmp.compare(s20, s21) != 0 && cmp.compare(s21, s22) != 0 && cmp.compare(s20, s21) == cmp.compare(s21, s22)) {
-            return cmp.compare(s20, s21);
-        }
-        if (cmp.compare(s00, s11) != 0 && cmp.compare(s11, s22) != 0 && cmp.compare(s00, s11) == cmp.compare(s11, s22)) {
-            return cmp.compare(s00, s11);
-        }
-        if (cmp.compare(s20, s11) != 0 && cmp.compare(s11, s02) != 0 && cmp.compare(s20, s11) == cmp.compare(s11, s02)) {
-            return cmp.compare(s20, s11);
-        }
-        return 0;
-    }
-    
-    public void nextTurn(){
+    public void nextTurn() {
         turnsLeft--;
     }
 
@@ -93,4 +60,33 @@ public class Board {
         //TODO
     }
 
+    public Board getCopy() {
+        Board copy = new Board();
+        for (int i = 0; i < cells.length; i++) {
+            for (int j = 0; j < cells.length; j++) {
+                copy.cells[i][j] = this.cells[i][j];
+            }
+        }
+        copy.turnsLeft = this.turnsLeft;
+        return copy;
+    }
+
+    public static Comparator<Board> comparator() {
+        Comparator<Symbol> cmp = Symbol.comparator();
+        return (Board b1, Board b2) -> {
+            for (int i = 0; i < b1.cells.length; i++) {
+                for (int j = 0; j < b1.cells.length; j++) {
+                    if (cmp.compare(b1.cells[i][j], b2.cells[i][j]) != 0) {
+                        return -1;
+                    }
+                }
+            }
+            return 0;
+        };
+    }
+
+    public String toString() {
+        String representation = "" + cells[0][0] + "|" + cells[1][0] + "|" + cells[2][0] + "\n" + "---------------" + "\n" + cells[0][1] + "|" + cells[1][1] + "|" + cells[2][1] + "\n" + "---------------" + "\n" + cells[0][2] + "|" + cells[1][2] + "|" + cells[2][2] + "\n";
+        return representation;
+    }
 }
