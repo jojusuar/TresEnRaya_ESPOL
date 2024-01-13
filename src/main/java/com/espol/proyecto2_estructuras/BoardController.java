@@ -12,6 +12,8 @@ import java.util.Random;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -75,13 +77,12 @@ public class BoardController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
-        //Ahora se inicializan los botones con una referencia a su posicion
-        //en el tablero, y se guardan en una matriz gemela de botones que permite
-        //controlar tablero y botones con los mismos indices. Ya esta definida la alternacion entre X y O.
-        //Lo siguiente es bloquear los botones que ya tienen simbolo, para solo poder presionar los vacios.
-        //Dejo tambien agregado el atributo againstComputer, para mantener el comportamiento actual del programa
-        //cuando se seleccione una opcion de jugar contra otro humano en el menu de pre-juego
+        //la logica del juego esta definida al 100% para jugador vs jugador.
+        //Dejo agregado el atributo againstComputer, para mantener el comportamiento actual del programa
+        //cuando se seleccione una opcion de jugar contra otro humano en el menu de pre-juego.
+        //
+        //ahora se debe escribir el minmaxer para que la computadora responda
+        //
         grid = new Button[3][3];
         Random random = new Random();
         crossTurn = random.nextBoolean();
@@ -102,30 +103,6 @@ public class BoardController implements Initializable {
     @FXML
     private void switchToMenu() throws IOException {
         App.setRoot("menu");
-    }
-
-    ////creo que no se necesita con los cambios que hice a la logica
-    public Button getButton(int i) {
-        if (i == 0) {
-            return button1;
-        } else if (i == 1) {
-            return button2;
-        } else if (i == 2) {
-            return button3;
-        } else if (i == 3) {
-            return button4;
-        } else if (i == 4) {
-            return button5;
-        } else if (i == 5) {
-            return button6;
-        } else if (i == 6) {
-            return button7;
-        } else if (i == 7) {
-            return button8;
-        } else if (i == 8) {
-            return button9;
-        }
-        return null;
     }
 
     @FXML
@@ -154,15 +131,48 @@ public class BoardController implements Initializable {
     public void setButtonPos(Button b, int x, int y) {
         grid[x][y] = b;
         b.setOnAction(ev -> {
+            tableroActual.nextTurn();
+            if (tableroActual.getCells()[x][y] != null) {
+                return;
+            }
             Symbol symbol = cross;
             if (!crossTurn) {
                 symbol = circle;
             }
             tableroActual.getCells()[x][y] = symbol;
             crossTurn = !crossTurn;
-            System.out.println("insertando " + symbol + " en el boton " + x + "x" + y);
             showBoard();
+            checkGame();
         });
+    }
+
+    private void checkGame() {
+        int winner = tableroActual.checkBoard();
+        switch (winner) {
+            case 1:
+                endGame("Ganador: CIRCULO");
+                return;
+            case 2:
+                endGame("Ganador: CRUZ");
+                return;
+            default:
+                break;
+        }
+        if (tableroActual.getTurnsLeft() == 0) {
+            endGame("Empate");
+        }
+    }
+
+    public void endGame(String outcome) {
+        Alert informationAlert = new Alert(AlertType.INFORMATION);
+        informationAlert.setTitle("Fin del juego");
+        informationAlert.setHeaderText(outcome);
+        informationAlert.showAndWait();
+        try {
+            switchToMenu();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
     }
 
     private void setSymbol(Symbol c, int i, int j) {
@@ -180,6 +190,30 @@ public class BoardController implements Initializable {
         }
     }
 
+    ////creo que no se necesita con los cambios que hice a la logica
+    public Button getButton(int i) {
+        if (i == 0) {
+            return button1;
+        } else if (i == 1) {
+            return button2;
+        } else if (i == 2) {
+            return button3;
+        } else if (i == 3) {
+            return button4;
+        } else if (i == 4) {
+            return button5;
+        } else if (i == 5) {
+            return button6;
+        } else if (i == 6) {
+            return button7;
+        } else if (i == 7) {
+            return button8;
+        } else if (i == 8) {
+            return button9;
+        }
+        return null;
+    }
+
     ///creo que innecesario tambien
     @FXML
     public void wipe() {
@@ -187,5 +221,4 @@ public class BoardController implements Initializable {
             getButton(i).setGraphic(null);
         }
     }
-
 }

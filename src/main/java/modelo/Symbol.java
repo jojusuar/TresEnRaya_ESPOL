@@ -5,12 +5,14 @@
 package modelo;
 
 import java.io.Serializable;
+import java.util.Comparator;
 
 /**
  *
  * @author euclasio
  */
-public abstract class Symbol implements Serializable{
+public abstract class Symbol implements Serializable {
+
     protected String path;
 
     public Symbol(String path) {
@@ -23,5 +25,19 @@ public abstract class Symbol implements Serializable{
 
     public void setPath(String path) {
         this.path = path;
+    }
+
+    public static Comparator<Symbol> comparator() {
+        return (Symbol s1, Symbol s2) -> {
+            if (s1 == null || s2 == null) {
+                return 0;
+            }
+            if (s1 instanceof Circle && s2 instanceof Circle) {
+                return 1;
+            } else if (s1 instanceof Cross && s2 instanceof Cross) {
+                return 2;
+            }
+            return 0;
+        };
     }
 }
