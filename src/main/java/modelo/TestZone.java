@@ -19,6 +19,6 @@ public class TestZone {
         Board emptyBoard = new Board();
         Tree<Board> tree = MinMaxer.minmax(emptyBoard);
         
-        System.out.println(tree);
+        System.out.println(emptyBoard.utilityFunction(Circle.class));
     }
 }
