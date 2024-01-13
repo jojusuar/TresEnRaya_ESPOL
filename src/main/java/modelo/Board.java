@@ -65,16 +65,16 @@ public class Board {
         this.circleUtility = circleUtility;
     }
     
-    public <E> int utilityFunction(Class<E> player){
-        //ingresa Circle.class si el jugador es cruz, ingresa Cross.class si el jugador es circulo
+    public <E> int utilityFunction(Class<E> human){
+        //ingresa la clase con la que juega el humano: Circle.class o Cross.class
         //se lo puede interpretar como el diferencial de ventaja entre jugadores
-        Class adversary = Circle.class;
-        if(player.equals(adversary)){
-            adversary = Cross.class;
+        Class computer = Circle.class;
+        if(computer.equals(human)){
+            computer = Cross.class;
         }
-        int playerP = pxFunction(adversary);
-        int adversaryP = pxFunction(player);
-        return playerP - adversaryP;
+        int computerP = pxFunction(human);
+        int humanP = pxFunction(computer);
+        return computerP - humanP;
     }
 
     public <T> int pxFunction(Class<T> adversary) {

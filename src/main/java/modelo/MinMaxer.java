@@ -17,7 +17,7 @@ public class MinMaxer {
     private static Tree<Board> possibilities;
     private static List<Tree<Board>> history = new LinkedList<>();
 
-    public static Tree<Board> minmax(Board current) {
+    public static <Q> Tree<Board> minmax(Board current, Class<Q> human) {
         possibilities = new Tree<>();
         possibilities.setCmp(Board.comparator());
         possibilities.setRoot(current);
