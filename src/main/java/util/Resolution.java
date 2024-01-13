@@ -10,7 +10,7 @@ import javafx.stage.Screen;
  *
  * @author euclasio
  */
-public class resolution {
+public class Resolution {
     private static double resX;
     private static double resY;
     
