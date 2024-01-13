@@ -83,6 +83,7 @@ public class BoardController implements Initializable {
         //
         //ahora se debe escribir el minmaxer para que la computadora responda
         //
+
         grid = new Button[3][3];
         Random random = new Random();
         crossTurn = random.nextBoolean();
@@ -189,7 +190,6 @@ public class BoardController implements Initializable {
             ex.printStackTrace();
         }
     }
-
     ////creo que no se necesita con los cambios que hice a la logica
     public Button getButton(int i) {
         if (i == 0) {
@@ -214,6 +214,7 @@ public class BoardController implements Initializable {
         return null;
     }
 
+
     ///creo que innecesario tambien
     @FXML
     public void wipe() {
@@ -221,4 +222,5 @@ public class BoardController implements Initializable {
             getButton(i).setGraphic(null);
         }
     }
+
 }
