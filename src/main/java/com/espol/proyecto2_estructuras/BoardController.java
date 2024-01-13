@@ -8,6 +8,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Optional;
 import java.util.Random;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
@@ -15,6 +16,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.FlowPane;
@@ -22,6 +24,7 @@ import modelo.Board;
 import modelo.Circle;
 import modelo.Cross;
 import modelo.Symbol;
+import util.Memory;
 
 /**
  * FXML Controller class
@@ -60,7 +63,7 @@ public class BoardController implements Initializable {
     @FXML
     private FlowPane tableroVisible;
 
-    private Board tableroActual;
+    private static Board tableroActual;
 
     private Button[][] grid;
 
@@ -87,7 +90,6 @@ public class BoardController implements Initializable {
         grid = new Button[3][3];
         Random random = new Random();
         crossTurn = random.nextBoolean();
-        tableroActual = new Board();
         cross = new Cross();
         circle = new Circle();
         setButtonPos(button1, 0, 0);
@@ -213,8 +215,21 @@ public class BoardController implements Initializable {
         }
         return null;
     }
-
-
+    
+    @FXML
+    public void saveGame(){
+        TextInputDialog dialog = new TextInputDialog("Guardar tablero actual");
+        dialog.setTitle("Guardar");
+        dialog.setHeaderText("Ingrese el nombre de la partida a guardar:");
+        Optional<String> result = dialog.showAndWait();
+        result.ifPresent(text -> tableroActual.setDescription(text));
+        Memory.addBoard(tableroActual);
+        Memory.save();
+    }
+    
+    public static void setTableroActual(Board b) {
+        tableroActual = b;
+    }
     ///creo que innecesario tambien
     @FXML
     public void wipe() {

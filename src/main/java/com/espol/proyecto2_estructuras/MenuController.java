@@ -9,6 +9,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import modelo.Board;
 
 /**
  * FXML Controller class
@@ -23,6 +24,17 @@ public class MenuController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
+    }
+    
+    @FXML
+    
+    private void newGame(){
+        BoardController.setTableroActual(new Board());
+        try {
+            switchToBoard();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
     }
     
     @FXML

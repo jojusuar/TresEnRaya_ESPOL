@@ -13,7 +13,7 @@
       <HBox layoutY="4.0" prefHeight="100.0" prefWidth="506.0" spacing="40.0">
          <children>
             <Button mnemonicParsing="false" onAction="#switchToMenu" text="Abandonar" />
-            <Button mnemonicParsing="false" text="Guardar estado actual" />
+            <Button mnemonicParsing="false" onAction="#saveGame" text="Guardar estado actual" />
             <Button mnemonicParsing="false" text="Pista" />
          </children>
          <padding>
