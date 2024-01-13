@@ -16,6 +16,23 @@ public class Board {
     private Comparator<Symbol> cmp;
     private int turnsLeft;
     private int utility;
+    private String description;
+
+    public int getUtility() {
+        return utility;
+    }
+
+    public void setUtility(int utility) {
+        this.utility = utility;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
     public Board() {
         cells = new Symbol[3][3];
