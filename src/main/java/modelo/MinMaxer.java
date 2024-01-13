@@ -17,7 +17,7 @@ public class MinMaxer {
     private static Tree<Board> possibilities;
     private static List<Tree<Board>> history = new LinkedList<>();
 
-    public static <Q> Tree<Board> minmax(Board current, Class<Q> human) {
+    public static Tree<Board> boardTreeBuilder(Board current) {
         possibilities = new Tree<>();
         possibilities.setCmp(Board.comparator());
         possibilities.setRoot(current);
@@ -50,10 +50,20 @@ public class MinMaxer {
                         }
                     }
                     //se me ocurre iterar sobre los hijos de cada tablero de nivel 1 y reemplazarlo cada vez que un hijo tenga utilidad menor
+                    //aunque eso podria llevar a preguntarse cual era la necesidad del arbol?
+                    //deberia llamar a este metodo buildBoardTree()
+                    //y crear minmax(Tree<Board> b)
+                    //mas vale guardarse las espaldas y utilizar explicitamente la estructura de datos
                 }
             }
         }
         //TODO: calculo de utilidad
         return possibilities;
+    }
+    
+    public int[] minmax(Tree<Board> tree){
+        int[] bestMoveCoordinates = new int[2];
+        //TODO
+        return bestMoveCoordinates;
     }
 }
