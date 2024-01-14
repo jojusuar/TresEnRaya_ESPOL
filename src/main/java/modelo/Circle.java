@@ -4,11 +4,13 @@
  */
 package modelo;
 
+import java.io.Serializable;
+
 /**
  *
  * @author euclasio
  */
-public class Circle extends Symbol{
+public class Circle extends Symbol implements Serializable{
 
     public Circle() {
         super("main/resources/assets/circle.png");

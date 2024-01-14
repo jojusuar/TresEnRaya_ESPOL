@@ -10,7 +10,7 @@
       <VBox alignment="CENTER" layoutX="2.0" prefHeight="540.0" prefWidth="540.0" spacing="40.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
             <Label text="TRES EN RAYA" />
-            <Button alignment="CENTER_RIGHT" mnemonicParsing="false" onAction="#newGame" text="Nueva partida" />
+            <Button alignment="CENTER_RIGHT" mnemonicParsing="false" onAction="#gameSettings" text="Nueva partida" />
             <Button mnemonicParsing="false" text="Cargar partida" />
          </children>
       </VBox>

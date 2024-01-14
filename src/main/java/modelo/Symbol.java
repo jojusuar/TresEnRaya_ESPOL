@@ -28,16 +28,21 @@ public abstract class Symbol implements Serializable {
     }
 
     public static Comparator<Symbol> comparator() {
-        return (Symbol s1, Symbol s2) -> {
-            if (s1 == null && s2 == null) {
-                return 0;
-            }
-            if (s1 instanceof Circle && s2 instanceof Circle) {
-                return 1;
-            } else if (s1 instanceof Cross && s2 instanceof Cross) {
-                return 2;
-            }
-            return -1;
-        };
+        return new SymbolComparator();
+    }
+}
+
+    class SymbolComparator implements Comparator<Symbol>, Serializable{
+    @Override
+    public int compare(Symbol s1, Symbol s2) {
+        if (s1 == null && s2 == null) {
+            return 0;
+        }
+        if (s1 instanceof Circle && s2 instanceof Circle) {
+            return 1;
+        } else if (s1 instanceof Cross && s2 instanceof Cross) {
+            return 2;
+        }
+        return -1;
     }
 }

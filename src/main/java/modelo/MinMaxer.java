@@ -6,8 +6,6 @@ package modelo;
 
 import estructuras.Tree;
 import java.util.Comparator;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.Stack;
@@ -18,7 +16,6 @@ import java.util.Stack;
  */
 public class MinMaxer {
 
-    private static List<Tree<Board>> history = new LinkedList<>();
     private static Comparator<Board> cmpUtility = (Board b1, Board b2) -> {
         return b2.getUtility() - b1.getUtility();
     };
@@ -57,7 +54,7 @@ public class MinMaxer {
                 }
             }
         }
-        history.add(possibilities);
+        possibilities.printTree();
         return possibilities;
     }
 
@@ -76,15 +73,14 @@ public class MinMaxer {
                     if (utility < min) {
                         min = utility;
                     }
-                }
-                else{
+                } else {
                     stack.push(children);
                 }
             }
             intermediate.getRoot().setUtility(min);
         }
         Queue<Board> max = new PriorityQueue(cmpUtility);
-        for(Tree<Board> intermediate: tree.getSubtrees()){
+        for (Tree<Board> intermediate : tree.getSubtrees()) {
             max.offer(intermediate.getRoot());
         }
         Board bestBoard = max.poll();
@@ -92,9 +88,8 @@ public class MinMaxer {
         bestMoveCoordinates[1] = bestBoard.getChoiceY();
         return bestMoveCoordinates;
     }
-    
+
 //no se si esto es utilizar el arbol de manera incorrecta respecto a su funcion como estructura de datos, probablemente abusa de saber que solo tiene 3 niveles
-    
 //    public static <E, T> int[] minmax(Board board, Class<E> human, Class<T> computer) {
 //        Tree<Board> tree = boardTreeBuilder(board);
 //        int[] bestMoveCoordinates = new int[2];

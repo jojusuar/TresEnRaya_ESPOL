@@ -4,13 +4,14 @@
  */
 package modelo;
 
+import java.io.Serializable;
 import java.util.Comparator;
 
 /**
  *
  * @author euclasio
  */
-public class GameMaster {
+public class GameMaster implements Serializable{
 
     private static boolean crossTurn;
 

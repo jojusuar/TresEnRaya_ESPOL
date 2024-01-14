@@ -4,6 +4,7 @@
  */
 package com.espol.proyecto2_estructuras;
 
+import estructuras.Tree;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -88,9 +89,6 @@ public class BoardController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        againstComputer = true;
-        hardMode = true;
-        //autoplay = true;
         grid = new Button[3][3];
         Random random = new Random();
         GameMaster.setCrossTurn(random.nextBoolean());
@@ -194,6 +192,9 @@ public class BoardController implements Initializable {
         informationAlert.setTitle("Fin del juego");
         informationAlert.setHeaderText(outcome);
         informationAlert.showAndWait();
+        hardMode = false;
+        autoplay = false;
+        againstComputer = false;
         try {
             switchToMenu();
         } catch (IOException ex) {
@@ -262,5 +263,16 @@ public class BoardController implements Initializable {
             computerMove();
         }
     }
-    
+
+    public static void setHardMode(boolean hardMode) {
+        BoardController.hardMode = hardMode;
+    }
+
+    public static void setAgainstComputer(boolean againstComputer) {
+        BoardController.againstComputer = againstComputer;
+    }
+
+    public static void setAutoplay(boolean autoplay) {
+        BoardController.autoplay = autoplay;
+    }
 }
