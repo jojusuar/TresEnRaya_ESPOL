@@ -39,7 +39,6 @@ public class MinMaxer {
                 if (currentCells[i][j] == null) {
                     Board level1 = current.getCopy();
                     level1.getCells()[i][j] = symbol1;
-                    System.out.println(level1);
                     level1.setChoiceX(i);
                     level1.setChoiceY(j);
                     possibilities.add(current, level1);
@@ -79,7 +78,11 @@ public class MinMaxer {
             max.offer(intermediateBoard);
         }
         Board bestBoard = max.poll();
-        System.out.println(bestBoard);
+        System.out.println(bestBoard + "  mejor utilidad = " + bestBoard.getUtility());
+        while (!max.isEmpty()) {
+            System.out.println(max.poll() + "  utilidad = " + bestBoard.getUtility());
+        }
+
         bestMoveCoordinates[0] = bestBoard.getChoiceX();
         bestMoveCoordinates[1] = bestBoard.getChoiceY();
         return bestMoveCoordinates;
