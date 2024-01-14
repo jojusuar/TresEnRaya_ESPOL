@@ -26,31 +26,31 @@ public class GameMaster {
         Symbol s02 = cells[0][2];
         Symbol s12 = cells[1][2];
         Symbol s22 = cells[2][2];
-        if (cmp.compare(s00, s10) != 0 && cmp.compare(s10, s20) != 0 && cmp.compare(s00, s10) == cmp.compare(s10, s20)) {
+        if (cmp.compare(s00, s10) != -1 && cmp.compare(s10, s20) != -1 && cmp.compare(s00, s10) == cmp.compare(s10, s20)) {
             return cmp.compare(s00, s10);
         }
-        if (cmp.compare(s01, s11) != 0 && cmp.compare(s11, s21) != 0 && cmp.compare(s01, s11) == cmp.compare(s11, s21)) {
+        if (cmp.compare(s01, s11) != -1 && cmp.compare(s11, s21) != -1 && cmp.compare(s01, s11) == cmp.compare(s11, s21)) {
             return cmp.compare(s01, s11);
         }
-        if (cmp.compare(s02, s12) != 0 && cmp.compare(s12, s22) != 0 && cmp.compare(s02, s12) == cmp.compare(s12, s22)) {
+        if (cmp.compare(s02, s12) != -1 && cmp.compare(s12, s22) != -1 && cmp.compare(s02, s12) == cmp.compare(s12, s22)) {
             return cmp.compare(s02, s12);
         }
-        if (cmp.compare(s00, s01) != 0 && cmp.compare(s01, s02) != 0 && cmp.compare(s00, s01) == cmp.compare(s01, s02)) {
+        if (cmp.compare(s00, s01) != -1 && cmp.compare(s01, s02) != -1 && cmp.compare(s00, s01) == cmp.compare(s01, s02)) {
             return cmp.compare(s00, s01);
         }
-        if (cmp.compare(s10, s11) != 0 && cmp.compare(s11, s12) != 0 && cmp.compare(s10, s11) == cmp.compare(s11, s12)) {
+        if (cmp.compare(s10, s11) != -1 && cmp.compare(s11, s12) != -1 && cmp.compare(s10, s11) == cmp.compare(s11, s12)) {
             return cmp.compare(s10, s11);
         }
-        if (cmp.compare(s20, s21) != 0 && cmp.compare(s21, s22) != 0 && cmp.compare(s20, s21) == cmp.compare(s21, s22)) {
+        if (cmp.compare(s20, s21) != -1 && cmp.compare(s21, s22) != -1 && cmp.compare(s20, s21) == cmp.compare(s21, s22)) {
             return cmp.compare(s20, s21);
         }
-        if (cmp.compare(s00, s11) != 0 && cmp.compare(s11, s22) != 0 && cmp.compare(s00, s11) == cmp.compare(s11, s22)) {
+        if (cmp.compare(s00, s11) != -1 && cmp.compare(s11, s22) != -1 && cmp.compare(s00, s11) == cmp.compare(s11, s22)) {
             return cmp.compare(s00, s11);
         }
-        if (cmp.compare(s20, s11) != 0 && cmp.compare(s11, s02) != 0 && cmp.compare(s20, s11) == cmp.compare(s11, s02)) {
+        if (cmp.compare(s20, s11) != -1 && cmp.compare(s11, s02) != -1 && cmp.compare(s20, s11) == cmp.compare(s11, s02)) {
             return cmp.compare(s20, s11);
         }
-        return 0;
+        return -1;
     }
 
     public static boolean isCrossTurn() {

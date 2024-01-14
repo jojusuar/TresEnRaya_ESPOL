@@ -41,6 +41,17 @@ public class TreeNode<E> {
         return children;
     }
 
+    public List<E> getChildrenContent() {
+        List<E> nodes = new LinkedList<>();
+        if (isEmpty()) {
+            return nodes;
+        }
+        for (Tree<E> subtree : children) {
+            nodes.add(subtree.getRoot());
+        }
+        return nodes;
+    }
+
     public boolean addChildren(E content) {
         Tree<E> subtree = new Tree<>();
         subtree.setRoot(content);
@@ -51,8 +62,8 @@ public class TreeNode<E> {
     public void setChildren(List<Tree<E>> children) {
         this.children = children;
     }
-    
-    public String toString(){
+
+    public String toString() {
         return content.toString();
     }
 }
