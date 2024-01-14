@@ -66,6 +66,7 @@ public class MinMaxer {
         Queue<Board> max = new PriorityQueue(cmpUtility);
         for (Tree<Board> intermediate : tree.getSubtrees()) {
             Board intermediateBoard = intermediate.getRoot();
+            System.out.println(intermediateBoard + " familia de este tablero intermedio");
             int min = Integer.MAX_VALUE;
             for (Tree<Board> leaf : intermediate.getSubtrees()) {
                 Board leafBoard = leaf.getRoot();
@@ -80,8 +81,10 @@ public class MinMaxer {
         Board bestBoard = max.poll();
         System.out.println(bestBoard + "  mejor utilidad = " + bestBoard.getUtility());
         while (!max.isEmpty()) {
-            System.out.println(max.poll() + "  utilidad = " + bestBoard.getUtility());
+            Board other = max.poll();
+            System.out.println(other + "  utilidad = " + other.getUtility());
         }
+        System.out.println("*******************************************SIGUIENTE JUGADA**********************************************");
 
         bestMoveCoordinates[0] = bestBoard.getChoiceX();
         bestMoveCoordinates[1] = bestBoard.getChoiceY();
