@@ -79,11 +79,14 @@ public class Board {
         //se lo puede interpretar como el diferencial de ventaja entre jugadores
         int computerP = pxFunction(human);
         int humanP = pxFunction(computer);
-        return computerP - humanP;
+        int diff = computerP - humanP;
+        //System.out.println(this+"  utilidad computadora= "+computerP+"  utilidad humano= "+humanP+"  diferencia= "+diff);
+        return diff;
     }
 
     public <T> int pxFunction(Class<T> adversary) {
         //basicamente retorna el numero de posibilidades de ganar en el estado del tablero actual
+        System.out.println(adversary);
         int utility = 0;
         Symbol s00 = cells[0][0];
         Symbol s10 = cells[1][0];

@@ -87,6 +87,8 @@ public class BoardController implements Initializable {
         grid = new Button[3][3];
         Random random = new Random();
         GameMaster.setCrossTurn(random.nextBoolean());
+        cross = new Cross();
+        circle = new Circle();
         if (GameMaster.isCrossTurn()) {
             human = Cross.class;
             computer = Circle.class;
@@ -94,8 +96,6 @@ public class BoardController implements Initializable {
             human = Circle.class;
             computer = Cross.class;
         }
-        cross = new Cross();
-        circle = new Circle();
         setButtonPos(button1, 0, 0);
         setButtonPos(button2, 1, 0);
         setButtonPos(button3, 2, 0);
@@ -105,6 +105,13 @@ public class BoardController implements Initializable {
         setButtonPos(button7, 0, 2);
         setButtonPos(button8, 1, 2);
         setButtonPos(button9, 2, 2);
+        boolean computerFirst = random.nextBoolean();
+        if (computerFirst) {
+            Class temp = human;
+            human = computer;
+            computer = temp;
+            computerMove();
+        }
     }
 
     @FXML
@@ -213,9 +220,6 @@ public class BoardController implements Initializable {
     }
 
     private void computerMove() {
-        if (tableroActual.getTurnsLeft() == 0) {
-            return;
-        }
         Symbol symbol = cross;
         if (!GameMaster.isCrossTurn()) {
             symbol = circle;
