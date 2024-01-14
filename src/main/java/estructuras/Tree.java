@@ -88,7 +88,7 @@ public class Tree<E> {
     public boolean add(E target, E content) {
         TreeNode<E> targetNode = getNode(target);
         if (targetNode == null) {
-            System.out.println("Target not in tree");
+            System.out.println("Target no existe en el arbol");
             return false;
         }
         targetNode.addChildren(content);
@@ -175,10 +175,7 @@ public class Tree<E> {
 
     private void printTree(Tree<E> node, int depth) {
         if (node != null) {
-            // Print the current node's content
             System.out.println(getIndent(depth) + node.getRoot().toString());
-
-            // Recursively print the children
             for (Tree<E> child : node.getRootNode().getChildren()) {
                 printTree(child, depth + 1);
             }

@@ -4,7 +4,6 @@
  */
 package com.espol.proyecto2_estructuras;
 
-import estructuras.Tree;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -106,7 +105,6 @@ public class BoardController implements Initializable {
             human = Circle.class;
             computer = Cross.class;
         }
-        System.out.println(tableroActual);
         grid = new Button[3][3];
         cross = new Cross();
         circle = new Circle();
@@ -239,11 +237,10 @@ public class BoardController implements Initializable {
         dialog.setHeaderText("Ingrese el nombre de la partida a guardar:");
         Optional<String> result = dialog.showAndWait();
         String text = result.get();
-        System.out.println(text);
-        tableroActual.setDescription(text);
-        tableroActual.setCrossTurnWhenSaved(GameMaster.isCrossTurn());
-        System.out.println(tableroActual.getDescription());
-        Memory.addBoard(tableroActual);
+        Board copy = tableroActual.getCopy();
+        copy.setDescription(text);
+        copy.setCrossTurnWhenSaved(GameMaster.isCrossTurn());
+        Memory.addBoard(copy);
         Memory.save();
     }
 

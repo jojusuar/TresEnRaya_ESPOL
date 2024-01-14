@@ -172,6 +172,8 @@ public class Board implements Serializable {
             }
         }
         copy.turnsLeft = this.turnsLeft;
+        copy.crossTurnWhenSaved = this.crossTurnWhenSaved;
+        copy.description = this.description;
         return copy;
     }
 

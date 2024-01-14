@@ -105,8 +105,8 @@ public class MenuController implements Initializable {
             Label boardLbl = new Label(board.toString());
             boardLbl.setOnMouseClicked(ev -> {
                 gameSettings();
-                System.out.println(board.toString());
-                BoardController.setTableroActual(board);
+                Board copy = board.getCopy();;
+                BoardController.setTableroActual(copy);
                 savedBoardsStage.close();
             });
             Button delete = new Button("X");
