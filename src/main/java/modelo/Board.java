@@ -15,9 +15,26 @@ public class Board {
     private Symbol[][] cells;
     private Comparator<Symbol> cmp;
     private int turnsLeft;
-    private int crossUtility;
-    private int circleUtility;
+    private int utility;
+    private int choiceX;
+    private int choiceY;
     private String description;
+
+    public int getChoiceX() {
+        return choiceX;
+    }
+
+    public void setChoiceX(int choiceX) {
+        this.choiceX = choiceX;
+    }
+
+    public int getChoiceY() {
+        return choiceY;
+    }
+
+    public void setChoiceY(int choiceY) {
+        this.choiceY = choiceY;
+    }
 
     public Comparator<Symbol> getCmp() {
         return cmp;
@@ -49,29 +66,17 @@ public class Board {
         return turnsLeft;
     }
 
-    public int getCrossUtility() {
-        return crossUtility;
+    public int getUtility() {
+        return utility;
     }
 
-    public void setCrossUtility(int crossUtility) {
-        this.crossUtility = crossUtility;
+    public void setUtility(int utility) {
+        this.utility = utility;
     }
 
-    public int getCircleUtility() {
-        return circleUtility;
-    }
-
-    public void setCircleUtility(int circleUtility) {
-        this.circleUtility = circleUtility;
-    }
-    
-    public <E> int utilityFunction(Class<E> human){
+    public <E, T> int utilityFunction(Class<E> human, Class<T> computer) {
         //ingresa la clase con la que juega el humano: Circle.class o Cross.class
         //se lo puede interpretar como el diferencial de ventaja entre jugadores
-        Class computer = Circle.class;
-        if(computer.equals(human)){
-            computer = Cross.class;
-        }
         int computerP = pxFunction(human);
         int humanP = pxFunction(computer);
         return computerP - humanP;
@@ -132,7 +137,7 @@ public class Board {
         return (Board b1, Board b2) -> {
             for (int i = 0; i < b1.cells.length; i++) {
                 for (int j = 0; j < b1.cells.length; j++) {
-                    if (cmp.compare(b1.cells[i][j], b2.cells[i][j]) != 0) {
+                    if (cmp.compare(b1.cells[i][j], b2.cells[i][j]) == -1) {
                         return -1;
                     }
                 }

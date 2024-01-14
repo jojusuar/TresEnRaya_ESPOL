@@ -30,6 +30,15 @@ public class Tree<E> {
         return root.isEmpty();
     }
 
+    public List<Tree<E>> getSubtrees() {
+        return root.getChildren();
+    }
+
+    public boolean isLeaf(E content) {
+        TreeNode<E> node = this.getNode(content);
+        return node.isEmpty();
+    }
+
     public Comparator<E> getCmp() {
         return cmp;
     }
@@ -60,20 +69,21 @@ public class Tree<E> {
         }
     }
 
-    private TreeNode<E> getNode(E content) {
+    public TreeNode<E> getNode(E content) {
         if (cmp.compare(root.getContent(), content) == 0) {
             return root;
         }
         List<Tree<E>> children = root.getChildren();
-        if (isLeaf()) {
-            return null;
-        }
-        for (Tree<E> child : children) {
-            TreeNode<E> result = child.getNode(content);
-            if (result != null) {
-                return result;
+        if (!isLeaf()) {
+            for (Tree<E> child : children) {
+                child.setCmp(cmp);
+                TreeNode<E> result = child.getNode(content);
+                if (result != null) {
+                    return result;
+                }
             }
         }
+
         return null;
     }
 
@@ -107,6 +117,13 @@ public class Tree<E> {
     public int nodeChildCount(E content) {
         TreeNode<E> node = getNode(content);
         return node.childrenCount();
+    }
+
+    public List<E> getFirstLevel() {
+        if (isEmpty()) {
+            return null;
+        }
+        return root.getChildrenContent();
     }
 
     public String toString() {

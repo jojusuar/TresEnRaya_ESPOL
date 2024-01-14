@@ -24,6 +24,7 @@ import modelo.Board;
 import modelo.Circle;
 import modelo.Cross;
 import modelo.GameMaster;
+import modelo.MinMaxer;
 import modelo.Symbol;
 import util.Memory;
 
@@ -72,6 +73,10 @@ public class BoardController implements Initializable {
 
     private Symbol circle;
 
+    private Class computer;
+
+    private Class human;
+
     private boolean againstComputer;
 
     /**
@@ -79,16 +84,16 @@ public class BoardController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        //la logica del juego esta definida al 100% para jugador vs jugador.
-        //Dejo agregado el atributo againstComputer, para mantener el comportamiento actual del programa
-        //cuando se seleccione una opcion de jugar contra otro humano en el menu de pre-juego.
-        //
-        //ahora se debe escribir el minmaxer para que la computadora responda
-        //
-
         grid = new Button[3][3];
         Random random = new Random();
         GameMaster.setCrossTurn(random.nextBoolean());
+        if (GameMaster.isCrossTurn()) {
+            human = Cross.class;
+            computer = Circle.class;
+        } else {
+            human = Circle.class;
+            computer = Cross.class;
+        }
         cross = new Cross();
         circle = new Circle();
         setButtonPos(button1, 0, 0);
@@ -139,25 +144,30 @@ public class BoardController implements Initializable {
             tableroActual.getCells()[x][y] = symbol;
             GameMaster.setCrossTurn(!GameMaster.isCrossTurn());
             showBoard();
-            checkGame();
+            int i = checkGame();
+            if (i == -1) {
+                computerMove();
+            }
         });
     }
 
-    private void checkGame() {
+    private int checkGame() {
         int winner = GameMaster.checkBoard(tableroActual);
         switch (winner) {
             case 1:
                 endGame("Ganador: CIRCULO");
-                return;
+                return 1;
             case 2:
                 endGame("Ganador: CRUZ");
-                return;
+                return 2;
             default:
                 break;
         }
         if (tableroActual.getTurnsLeft() == 0) {
             endGame("Empate");
+            return 0;
         }
+        return -1;
     }
 
     public void endGame(String outcome) {
@@ -200,5 +210,21 @@ public class BoardController implements Initializable {
 
     public static void setTableroActual(Board b) {
         tableroActual = b;
+    }
+
+    private void computerMove() {
+        if (tableroActual.getTurnsLeft() == 0) {
+            return;
+        }
+        Symbol symbol = cross;
+        if (!GameMaster.isCrossTurn()) {
+            symbol = circle;
+        }
+        int[] play = MinMaxer.minmax(tableroActual, human, computer);
+        tableroActual.getCells()[play[0]][play[1]] = symbol;
+        tableroActual.nextTurn();
+        GameMaster.setCrossTurn(!GameMaster.isCrossTurn());
+        showBoard();
+        checkGame();
     }
 }
