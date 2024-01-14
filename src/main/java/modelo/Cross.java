@@ -4,11 +4,13 @@
  */
 package modelo;
 
+import java.io.Serializable;
+
 /**
  *
  * @author euclasio
  */
-public class Cross extends Symbol {
+public class Cross extends Symbol implements Serializable {
     
     public Cross() {
         super("main/resources/assets/cross.png");

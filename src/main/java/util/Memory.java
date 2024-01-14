@@ -31,7 +31,7 @@ public class Memory {
 
     public static void save() {
         try (ObjectOutputStream out = new ObjectOutputStream(
-                new FileOutputStream("src/main/resources/memory/users.ser"));) {
+                new FileOutputStream("src/main/resources/memory/games.ser"));) {
             out.writeObject(boards);
         } catch (IOException ex) {
             ex.printStackTrace();
@@ -40,7 +40,7 @@ public class Memory {
 
     public static void load() {
         try (ObjectInputStream in = new ObjectInputStream(
-                new FileInputStream("src/main/resources/memory/users.ser"));) {
+                new FileInputStream("src/main/resources/memory/games.ser"));) {
             boards = (LinkedList<Board>) in.readObject();
         } catch (IOException ex) {
             System.out.println("No hay juegos que cargar");

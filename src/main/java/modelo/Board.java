@@ -4,13 +4,14 @@
  */
 package modelo;
 
+import java.io.Serializable;
 import java.util.Comparator;
 
 /**
  *
  * @author euclasio
  */
-public class Board {
+public class Board implements Serializable {
 
     private Symbol[][] cells;
     private Comparator<Symbol> cmp;
@@ -80,14 +81,14 @@ public class Board {
         int computerP = pxFunction(human, false, hard);
         int humanP = pxFunction(computer, true, hard);
         int diff = computerP - humanP;
-        System.out.println(this+"  utilidad computadora= "+computerP+"  utilidad humano= "+humanP+"  diferencia= "+diff);
+        //System.out.println(this+"  utilidad computadora= "+computerP+"  utilidad humano= "+humanP+"  diferencia= "+diff);
         return diff;
     }
 
     public <T> int pxFunction(Class<T> adversary, boolean bias, boolean hard) {
         int utility = 0;
         int safeguard = -100; //si una jugada implica la derrota, la descarta automaticamente
-        if(bias){
+        if (bias) {
             safeguard = -200; //si la jugada implica la victoria, le da prioridad maxima
         }
         Symbol s00 = cells[0][0];
@@ -101,62 +102,54 @@ public class Board {
         Symbol s22 = cells[2][2];
         if (!(adversary.isInstance(s00)) && !(adversary.isInstance(s10)) && !(adversary.isInstance(s20))) {
             utility++;
-        }
-        else if(adversary.isInstance(s00) && adversary.isInstance(s10) && adversary.isInstance(s20)){
+        } else if (adversary.isInstance(s00) && adversary.isInstance(s10) && adversary.isInstance(s20)) {
             return safeguard;
         }
         if (!(adversary.isInstance(s01)) && !(adversary.isInstance(s11)) && !(adversary.isInstance(s21))) {
             utility++;
-            if(hard & bias){
+            if (hard & bias) { //el modo dificil resta la utilidad del adversario en la cruz central para favorecer a las esquinas, pues son mas peligrosas
                 utility--;
             }
-        }
-        else if((adversary.isInstance(s01)) && (adversary.isInstance(s11)) && adversary.isInstance(s21)){
+        } else if ((adversary.isInstance(s01)) && (adversary.isInstance(s11)) && adversary.isInstance(s21)) {
             return safeguard;
         }
         if (!(adversary.isInstance(s02)) && !(adversary.isInstance(s12)) && !(adversary.isInstance(s22))) {
             utility++;
-        }
-        else if(adversary.isInstance(s02) && adversary.isInstance(s12) && adversary.isInstance(s22)){
+        } else if (adversary.isInstance(s02) && adversary.isInstance(s12) && adversary.isInstance(s22)) {
             return safeguard;
         }
         if (!(adversary.isInstance(s00)) && !(adversary.isInstance(s01)) && !(adversary.isInstance(s02))) {
             utility++;
-        }
-        else if((adversary.isInstance(s00)) && (adversary.isInstance(s01)) && (adversary.isInstance(s02))){
+        } else if ((adversary.isInstance(s00)) && (adversary.isInstance(s01)) && (adversary.isInstance(s02))) {
             return safeguard;
         }
         if (!(adversary.isInstance(s10)) && !(adversary.isInstance(s11)) && !(adversary.isInstance(s12))) {
             utility++;
-            if(hard & bias){
+            if (hard & bias) {
                 utility--;
             }
-        }
-        else if((adversary.isInstance(s10)) && (adversary.isInstance(s11)) && (adversary.isInstance(s12))){
+        } else if ((adversary.isInstance(s10)) && (adversary.isInstance(s11)) && (adversary.isInstance(s12))) {
             return safeguard;
         }
         if (!(adversary.isInstance(s20)) && !(adversary.isInstance(s21)) && !(adversary.isInstance(s22))) {
             utility++;
-        }
-        else if((adversary.isInstance(s20)) && (adversary.isInstance(s21)) && (adversary.isInstance(s22))){
+        } else if ((adversary.isInstance(s20)) && (adversary.isInstance(s21)) && (adversary.isInstance(s22))) {
             return safeguard;
         }
         if (!(adversary.isInstance(s00)) && !(adversary.isInstance(s11)) && !(adversary.isInstance(s22))) {
             utility++;
-            if(hard & bias){
+            if (hard & bias) {
                 utility--;
             }
-        }
-        else if((adversary.isInstance(s00)) && (adversary.isInstance(s11)) && (adversary.isInstance(s22))){
+        } else if ((adversary.isInstance(s00)) && (adversary.isInstance(s11)) && (adversary.isInstance(s22))) {
             return safeguard;
         }
         if (!(adversary.isInstance(s20)) && !(adversary.isInstance(s11)) && !(adversary.isInstance(s02))) {
             utility++;
-            if(hard & bias){
+            if (hard & bias) {
                 utility--;
             }
-        }
-        else if((adversary.isInstance(s20)) && (adversary.isInstance(s11)) && (adversary.isInstance(s02))){
+        } else if ((adversary.isInstance(s20)) && (adversary.isInstance(s11)) && (adversary.isInstance(s02))) {
             return safeguard;
         }
         return utility;
@@ -174,21 +167,28 @@ public class Board {
     }
 
     public static Comparator<Board> comparator() {
-        Comparator<Symbol> cmp = Symbol.comparator();
-        return (Board b1, Board b2) -> {
-            for (int i = 0; i < b1.cells.length; i++) {
-                for (int j = 0; j < b1.cells.length; j++) {
-                    if (cmp.compare(b1.cells[i][j], b2.cells[i][j]) == -1) {
-                        return -1;
-                    }
-                }
-            }
-            return 0;
-        };
+        return new BoardComparator();
     }
 
     public String toString() {
         String representation = "" + cells[0][0] + "|" + cells[1][0] + "|" + cells[2][0] + "\n" + "---------------" + "\n" + cells[0][1] + "|" + cells[1][1] + "|" + cells[2][1] + "\n" + "---------------" + "\n" + cells[0][2] + "|" + cells[1][2] + "|" + cells[2][2] + "\n";
         return representation;
+    }
+}
+
+class BoardComparator implements Comparator<Board>, Serializable{
+
+    @Override
+    public int compare(Board b1, Board b2) {
+        Comparator<Symbol> cmp = Symbol.comparator();
+
+        for (int i = 0; i < b1.getCells().length; i++) {
+            for (int j = 0; j < b1.getCells()[i].length; j++) {
+                if (cmp.compare(b1.getCells()[i][j], b2.getCells()[i][j]) == -1) {
+                    return -1;
+                }
+            }
+        }
+        return 0;
     }
 }

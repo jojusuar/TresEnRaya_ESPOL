@@ -22,6 +22,10 @@ public class Tree<E> {
         this.root = null;
     }
 
+    public Tree(E root) {
+        this.root = new TreeNode(root);
+    }
+
     public boolean isEmpty() {
         return this.root == null;
     }
@@ -32,6 +36,36 @@ public class Tree<E> {
 
     public List<Tree<E>> getSubtrees() {
         return root.getChildren();
+    }
+
+    public Tree<E> getSubtree(E content) {
+        TreeNode<E> node = getNode(content);
+        Tree<E> subtree = new Tree<>();
+        subtree.setCmp(cmp);
+        subtree.setRootNode(node);
+        return subtree;
+    }
+
+    public boolean replace(Tree<E> subtree, Tree<E> replacement) {
+        if (subtree.isEmpty() || replacement.isEmpty()) {
+            return false;
+        }
+        TreeNode<E> subtreeNode = subtree.getRootNode();
+        Stack<TreeNode<E>> stack = new Stack<>();
+        stack.push(root);
+        while (!stack.isEmpty()) {
+            TreeNode<E> current = stack.pop();
+            if (cmp.compare(current.getContent(), subtreeNode.getContent()) == 0) {
+                current = subtreeNode;
+                return true;
+            }
+            if (!current.isEmpty()) {
+                for (Tree<E> child : current.getChildren()) {
+                    stack.push(child.root);
+                }
+            }
+        }
+        return false;
     }
 
     public boolean isLeaf(E content) {
@@ -135,4 +169,27 @@ public class Tree<E> {
         return representation;
     }
 
+    public void printTree() {
+        printTree(this, 0);
+    }
+
+    private void printTree(Tree<E> node, int depth) {
+        if (node != null) {
+            // Print the current node's content
+            System.out.println(getIndent(depth) + node.getRoot().toString());
+
+            // Recursively print the children
+            for (Tree<E> child : node.getRootNode().getChildren()) {
+                printTree(child, depth + 1);
+            }
+        }
+    }
+
+    private String getIndent(int depth) {
+        StringBuilder indent = new StringBuilder();
+        for (int i = 0; i < depth; i++) {
+            indent.append("  "); // Adjust the number of spaces based on your preference
+        }
+        return indent.toString();
+    }
 }
