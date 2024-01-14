@@ -76,14 +76,21 @@ public class BoardController implements Initializable {
     private Class computer;
 
     private Class human;
+    
+    private static boolean hardMode;
 
-    private boolean againstComputer;
+    private static boolean againstComputer;
+    
+    private static boolean autoplay;
 
     /**
      * Initializes the controller class.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        againstComputer = true;
+        hardMode = true;
+        //autoplay = true;
         grid = new Button[3][3];
         Random random = new Random();
         GameMaster.setCrossTurn(random.nextBoolean());
@@ -105,12 +112,17 @@ public class BoardController implements Initializable {
         setButtonPos(button7, 0, 2);
         setButtonPos(button8, 1, 2);
         setButtonPos(button9, 2, 2);
-        boolean computerFirst = random.nextBoolean();
-        if (computerFirst) {
-            Class temp = human;
-            human = computer;
-            computer = temp;
-            computerMove();
+        if (againstComputer) {
+            boolean computerFirst = random.nextBoolean();
+            if (computerFirst) {
+                Class temp = human;
+                human = computer;
+                computer = temp;
+                computerMove();
+            }
+        }
+        if(autoplay){
+            computer2Move();
         }
     }
 
@@ -152,7 +164,7 @@ public class BoardController implements Initializable {
             GameMaster.setCrossTurn(!GameMaster.isCrossTurn());
             showBoard();
             int i = checkGame();
-            if (i == -1) {
+            if (againstComputer && i == -1) {
                 computerMove();
             }
         });
@@ -224,11 +236,31 @@ public class BoardController implements Initializable {
         if (!GameMaster.isCrossTurn()) {
             symbol = circle;
         }
-        int[] play = MinMaxer.minmax(tableroActual, human, computer);
+        int[] play = MinMaxer.minmax(tableroActual, human, computer, hardMode);
         tableroActual.getCells()[play[0]][play[1]] = symbol;
         tableroActual.nextTurn();
         GameMaster.setCrossTurn(!GameMaster.isCrossTurn());
         showBoard();
-        checkGame();
+        int i = checkGame();
+        if(autoplay && i == -1){
+            computer2Move();
+        }
     }
+    
+    private void computer2Move() {
+        Symbol symbol = cross;
+        if (!GameMaster.isCrossTurn()) {
+            symbol = circle;
+        }
+        int[] play = MinMaxer.minmax(tableroActual, computer, human, hardMode);
+        tableroActual.getCells()[play[0]][play[1]] = symbol;
+        tableroActual.nextTurn();
+        GameMaster.setCrossTurn(!GameMaster.isCrossTurn());
+        showBoard();
+        int i = checkGame();
+        if(autoplay && i == -1){
+            computerMove();
+        }
+    }
+    
 }

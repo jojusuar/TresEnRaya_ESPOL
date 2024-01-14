@@ -74,21 +74,21 @@ public class Board {
         this.utility = utility;
     }
 
-    public <E, T> int utilityFunction(Class<E> human, Class<T> computer) {
+    public <E, T> int utilityFunction(Class<E> human, Class<T> computer, boolean hard) {
         //ingresa la clase con la que juega el humano: Circle.class o Cross.class
         //se lo puede interpretar como el diferencial de ventaja entre jugadores
-        int computerP = pxFunction(human, false);
-        int humanP = pxFunction(computer, true);
+        int computerP = pxFunction(human, false, hard);
+        int humanP = pxFunction(computer, true, hard);
         int diff = computerP - humanP;
         System.out.println(this+"  utilidad computadora= "+computerP+"  utilidad humano= "+humanP+"  diferencia= "+diff);
         return diff;
     }
 
-    public <T> int pxFunction(Class<T> adversary, boolean bias) {
+    public <T> int pxFunction(Class<T> adversary, boolean bias, boolean hard) {
         int utility = 0;
-        int safeguard = -100; //si una jugada implica la victoria rival, la descarta automaticamente
+        int safeguard = -100; //si una jugada implica la derrota, la descarta automaticamente
         if(bias){
-            safeguard = -200; //penaliza el error humano para darle ventaja a la computadora
+            safeguard = -200; //si la jugada implica la victoria, le da prioridad maxima
         }
         Symbol s00 = cells[0][0];
         Symbol s10 = cells[1][0];
@@ -107,6 +107,9 @@ public class Board {
         }
         if (!(adversary.isInstance(s01)) && !(adversary.isInstance(s11)) && !(adversary.isInstance(s21))) {
             utility++;
+            if(hard & bias){
+                utility--;
+            }
         }
         else if((adversary.isInstance(s01)) && (adversary.isInstance(s11)) && adversary.isInstance(s21)){
             return safeguard;
@@ -125,6 +128,9 @@ public class Board {
         }
         if (!(adversary.isInstance(s10)) && !(adversary.isInstance(s11)) && !(adversary.isInstance(s12))) {
             utility++;
+            if(hard & bias){
+                utility--;
+            }
         }
         else if((adversary.isInstance(s10)) && (adversary.isInstance(s11)) && (adversary.isInstance(s12))){
             return safeguard;
@@ -137,12 +143,18 @@ public class Board {
         }
         if (!(adversary.isInstance(s00)) && !(adversary.isInstance(s11)) && !(adversary.isInstance(s22))) {
             utility++;
+            if(hard & bias){
+                utility--;
+            }
         }
         else if((adversary.isInstance(s00)) && (adversary.isInstance(s11)) && (adversary.isInstance(s22))){
             return safeguard;
         }
         if (!(adversary.isInstance(s20)) && !(adversary.isInstance(s11)) && !(adversary.isInstance(s02))) {
             utility++;
+            if(hard & bias){
+                utility--;
+            }
         }
         else if((adversary.isInstance(s20)) && (adversary.isInstance(s11)) && (adversary.isInstance(s02))){
             return safeguard;
