@@ -77,23 +77,28 @@ public class BoardController implements Initializable {
     private Class computer;
 
     private Class human;
-    
+
     private static boolean hardMode;
 
     private static boolean againstComputer;
-    
+
     private static boolean autoplay;
+
+    private static boolean loaded;
 
     /**
      * Initializes the controller class.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        grid = new Button[3][3];
         Random random = new Random();
-        GameMaster.setCrossTurn(random.nextBoolean());
-        cross = new Cross();
-        circle = new Circle();
+        if (tableroActual == null) {
+            tableroActual = new Board();
+            GameMaster.setCrossTurn(random.nextBoolean());
+        } else {
+            loaded = true;
+            GameMaster.setCrossTurn(tableroActual.isCrossTurnWhenSaved());
+        }
         if (GameMaster.isCrossTurn()) {
             human = Cross.class;
             computer = Circle.class;
@@ -101,6 +106,11 @@ public class BoardController implements Initializable {
             human = Circle.class;
             computer = Cross.class;
         }
+        System.out.println(tableroActual);
+        grid = new Button[3][3];
+        cross = new Cross();
+        circle = new Circle();
+
         setButtonPos(button1, 0, 0);
         setButtonPos(button2, 1, 0);
         setButtonPos(button3, 2, 0);
@@ -110,7 +120,10 @@ public class BoardController implements Initializable {
         setButtonPos(button7, 0, 2);
         setButtonPos(button8, 1, 2);
         setButtonPos(button9, 2, 2);
-        if (againstComputer) {
+        if (loaded) {
+            showBoard();
+        }
+        if (againstComputer && !loaded) {
             boolean computerFirst = random.nextBoolean();
             if (computerFirst) {
                 Class temp = human;
@@ -119,13 +132,18 @@ public class BoardController implements Initializable {
                 computerMove();
             }
         }
-        if(autoplay){
+        if (autoplay) {
             computer2Move();
         }
     }
 
     @FXML
     private void switchToMenu() throws IOException {
+        hardMode = false;
+        autoplay = false;
+        againstComputer = false;
+        loaded = false;
+        tableroActual = null;
         App.setRoot("menu");
     }
 
@@ -192,9 +210,6 @@ public class BoardController implements Initializable {
         informationAlert.setTitle("Fin del juego");
         informationAlert.setHeaderText(outcome);
         informationAlert.showAndWait();
-        hardMode = false;
-        autoplay = false;
-        againstComputer = false;
         try {
             switchToMenu();
         } catch (IOException ex) {
@@ -223,7 +238,11 @@ public class BoardController implements Initializable {
         dialog.setTitle("Guardar");
         dialog.setHeaderText("Ingrese el nombre de la partida a guardar:");
         Optional<String> result = dialog.showAndWait();
-        result.ifPresent(text -> tableroActual.setDescription(text));
+        String text = result.get();
+        System.out.println(text);
+        tableroActual.setDescription(text);
+        tableroActual.setCrossTurnWhenSaved(GameMaster.isCrossTurn());
+        System.out.println(tableroActual.getDescription());
         Memory.addBoard(tableroActual);
         Memory.save();
     }
@@ -233,6 +252,7 @@ public class BoardController implements Initializable {
     }
 
     private void computerMove() {
+        showBoard();
         Symbol symbol = cross;
         if (!GameMaster.isCrossTurn()) {
             symbol = circle;
@@ -243,11 +263,11 @@ public class BoardController implements Initializable {
         GameMaster.setCrossTurn(!GameMaster.isCrossTurn());
         showBoard();
         int i = checkGame();
-        if(autoplay && i == -1){
+        if (autoplay && i == -1) {
             computer2Move();
         }
     }
-    
+
     private void computer2Move() {
         Symbol symbol = cross;
         if (!GameMaster.isCrossTurn()) {
@@ -259,7 +279,7 @@ public class BoardController implements Initializable {
         GameMaster.setCrossTurn(!GameMaster.isCrossTurn());
         showBoard();
         int i = checkGame();
-        if(autoplay && i == -1){
+        if (autoplay && i == -1) {
             computerMove();
         }
     }

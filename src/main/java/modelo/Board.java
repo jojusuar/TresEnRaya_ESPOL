@@ -20,6 +20,15 @@ public class Board implements Serializable {
     private int choiceX;
     private int choiceY;
     private String description;
+    private boolean crossTurnWhenSaved;
+
+    public boolean isCrossTurnWhenSaved() {
+        return crossTurnWhenSaved;
+    }
+
+    public void setCrossTurnWhenSaved(boolean crossTurnWhenSaved) {
+        this.crossTurnWhenSaved = crossTurnWhenSaved;
+    }
 
     public int getChoiceX() {
         return choiceX;
@@ -171,7 +180,17 @@ public class Board implements Serializable {
     }
 
     public String toString() {
-        String representation = "" + cells[0][0] + "|" + cells[1][0] + "|" + cells[2][0] + "\n" + "---------------" + "\n" + cells[0][1] + "|" + cells[1][1] + "|" + cells[2][1] + "\n" + "---------------" + "\n" + cells[0][2] + "|" + cells[1][2] + "|" + cells[2][2] + "\n";
+        Board toPrint = this.getCopy();
+        toPrint.description = this.description;
+        for (int i = 0; i < toPrint.cells.length; i++) {
+            for (int j = 0; j < toPrint.cells.length; j++) {
+                if (toPrint.cells[i][j] == null) {
+                    toPrint.cells[i][j] = new Blank();
+                }
+            }
+        }
+        String representation = "" + toPrint.cells[0][0] + "|" + toPrint.cells[1][0] + "|" + toPrint.cells[2][0] + "\n" + "---------------" + "\n" + toPrint.cells[0][1] + "|" + toPrint.cells[1][1] + "|" + toPrint.cells[2][1] + "      " +toPrint.description +"\n" + "---------------" + "\n" + toPrint.cells[0][2] + "|" + toPrint.cells[1][2] + "|" + toPrint.cells[2][2] + "\n"
+                + "**************************************";
         return representation;
     }
 }

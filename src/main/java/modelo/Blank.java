@@ -10,15 +10,13 @@ import java.io.Serializable;
  *
  * @author euclasio
  */
-public class Cross extends Symbol implements Serializable {
-    
-    public Cross() {
-        super("main/resources/assets/cross.png");
+public class Blank extends Symbol implements Serializable{
+    public Blank() {
+        super("n/a");
     }
 
     @Override
     public String toString() {
-        return " X ";
+        return "    ";
     }
-    
 }
