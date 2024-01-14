@@ -14,7 +14,7 @@
          <children>
             <Button mnemonicParsing="false" onAction="#switchToMenu" text="Abandonar" />
             <Button mnemonicParsing="false" onAction="#saveGame" text="Guardar estado actual" />
-            <Button mnemonicParsing="false" text="Pista" />
+            <Button mnemonicParsing="false" onAction="#giveTip" text="Pista" />
          </children>
          <padding>
             <Insets left="90.0" top="35.0" />

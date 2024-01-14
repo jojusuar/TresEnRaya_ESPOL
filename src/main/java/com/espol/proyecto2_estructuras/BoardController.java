@@ -283,7 +283,13 @@ public class BoardController implements Initializable {
             computerMove();
         }
     }
-
+    
+    @FXML
+    private void giveTip(){
+       int[] play = MinMaxer.minmax(tableroActual, computer, human, true);
+       grid[play[0]][play[1]].setStyle("-fx-background-color: #2ecc71; -fx-text-fill: white;");
+    }
+    
     public static void setHardMode(boolean hardMode) {
         BoardController.hardMode = hardMode;
     }
