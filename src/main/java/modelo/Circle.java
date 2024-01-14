@@ -18,6 +18,6 @@ public class Circle extends Symbol implements Serializable{
     
     @Override
     public String toString() {
-        return "O";
+        return " O ";
     }
 }

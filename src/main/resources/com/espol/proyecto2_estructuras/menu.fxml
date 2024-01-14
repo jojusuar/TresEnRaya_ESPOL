@@ -11,7 +11,7 @@
          <children>
             <Label text="TRES EN RAYA" />
             <Button alignment="CENTER_RIGHT" mnemonicParsing="false" onAction="#gameSettings" text="Nueva partida" />
-            <Button mnemonicParsing="false" text="Cargar partida" />
+            <Button mnemonicParsing="false" onAction="#loadGame" text="Cargar partida" />
          </children>
       </VBox>
    </children>

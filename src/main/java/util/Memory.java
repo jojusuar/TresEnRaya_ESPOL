@@ -28,6 +28,10 @@ public class Memory {
     public static void deleteBoard(Board board) {
         boards.remove(board);
     }
+    
+    public static List<Board> getBoards(){
+        return boards;
+    }
 
     public static void save() {
         try (ObjectOutputStream out = new ObjectOutputStream(
@@ -45,6 +49,7 @@ public class Memory {
         } catch (IOException ex) {
             System.out.println("No hay juegos que cargar");
             boards = new LinkedList<>();
+            Memory.save();
         } catch (ClassNotFoundException e) {
             System.out.println("No se encontró la clase Board");
         }
