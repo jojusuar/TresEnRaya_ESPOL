@@ -10,6 +10,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Queue;
+import java.util.Stack;
 
 /**
  *
@@ -60,34 +61,68 @@ public class MinMaxer {
         return possibilities;
     }
 
-    public static <E, T> int[] minmax(Board board, Class<E> human, Class<T> computer) {
+    public static <E, T> int[] minmax(Board board, Class<E> human, Class<T> computer, boolean hard) {
         Tree<Board> tree = boardTreeBuilder(board);
         int[] bestMoveCoordinates = new int[2];
-        Queue<Board> max = new PriorityQueue(cmpUtility);
-        for (Tree<Board> intermediate : tree.getSubtrees()) {
-            Board intermediateBoard = intermediate.getRoot();
-            System.out.println(intermediateBoard + " familia de este tablero intermedio");
+        Stack<Tree<Board>> stack = new Stack<>();
+        stack.push(tree);
+        while (!stack.isEmpty()) {
+            Tree<Board> intermediate = stack.pop();
             int min = Integer.MAX_VALUE;
-            for (Tree<Board> leaf : intermediate.getSubtrees()) {
-                Board leafBoard = leaf.getRoot();
-                int utility = leafBoard.utilityFunction(human, computer);
-                if (utility < min) {
-                    min = utility;
+            for (Tree<Board> children : intermediate.getSubtrees()) {
+                if (children.isLeaf()) {
+                    Board leafBoard = children.getRoot();
+                    int utility = leafBoard.utilityFunction(human, computer, hard);
+                    if (utility < min) {
+                        min = utility;
+                    }
+                }
+                else{
+                    stack.push(children);
                 }
             }
-            intermediateBoard.setUtility(min);
-            max.offer(intermediateBoard);
+            intermediate.getRoot().setUtility(min);
+        }
+        Queue<Board> max = new PriorityQueue(cmpUtility);
+        for(Tree<Board> intermediate: tree.getSubtrees()){
+            max.offer(intermediate.getRoot());
         }
         Board bestBoard = max.poll();
-        System.out.println(bestBoard + "  mejor utilidad = " + bestBoard.getUtility());
-        while (!max.isEmpty()) {
-            Board other = max.poll();
-            System.out.println(other + "  utilidad = " + other.getUtility());
-        }
-        System.out.println("*******************************************SIGUIENTE JUGADA**********************************************");
-
         bestMoveCoordinates[0] = bestBoard.getChoiceX();
         bestMoveCoordinates[1] = bestBoard.getChoiceY();
         return bestMoveCoordinates;
     }
+    
+//no se si esto es utilizar el arbol de manera incorrecta respecto a su funcion como estructura de datos, probablemente abusa de saber que solo tiene 3 niveles
+    
+//    public static <E, T> int[] minmax(Board board, Class<E> human, Class<T> computer) {
+//        Tree<Board> tree = boardTreeBuilder(board);
+//        int[] bestMoveCoordinates = new int[2];
+//        Queue<Board> max = new PriorityQueue(cmpUtility);
+//        for (Tree<Board> intermediate : tree.getSubtrees()) {
+//            Board intermediateBoard = intermediate.getRoot();
+//            System.out.println(intermediateBoard + " familia de este tablero intermedio");
+//            int min = Integer.MAX_VALUE;
+//            for (Tree<Board> leaf : intermediate.getSubtrees()) {
+//                Board leafBoard = leaf.getRoot();
+//                int utility = leafBoard.utilityFunction(human, computer);
+//                if (utility < min) {
+//                    min = utility;
+//                }
+//            }
+//            intermediateBoard.setUtility(min);
+//            max.offer(intermediateBoard);
+//        }
+//        Board bestBoard = max.poll();
+//        System.out.println(bestBoard + "  mejor utilidad = " + bestBoard.getUtility());
+//        while (!max.isEmpty()) {
+//            Board other = max.poll();
+//            System.out.println(other + "  utilidad = " + other.getUtility());
+//        }
+//        System.out.println("*******************************************SIGUIENTE JUGADA**********************************************");
+//
+//        bestMoveCoordinates[0] = bestBoard.getChoiceX();
+//        bestMoveCoordinates[1] = bestBoard.getChoiceY();
+//        return bestMoveCoordinates;
+//    }
 }
