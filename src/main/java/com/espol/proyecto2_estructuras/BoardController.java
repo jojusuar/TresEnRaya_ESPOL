@@ -8,18 +8,23 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
+import java.util.List;
 import java.util.Optional;
+import java.util.Queue;
 import java.util.Random;
 import java.util.ResourceBundle;
+import java.util.Stack;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.GridPane;
 import modelo.Board;
 import modelo.Circle;
 import modelo.Cross;
@@ -64,6 +69,9 @@ public class BoardController implements Initializable {
 
     @FXML
     private FlowPane tableroVisible;
+
+    @FXML
+    private GridPane intermediateBoards;
 
     private static Board tableroActual;
 
@@ -254,7 +262,18 @@ public class BoardController implements Initializable {
         if (!GameMaster.isCrossTurn()) {
             symbol = circle;
         }
+
         int[] play = MinMaxer.minmax(tableroActual, human, computer, hardMode);
+        intermediateBoards.getChildren().clear();
+        Stack<Board> intermediates = MinMaxer.getIntermediateBoards();
+        for (int i = 0; i < intermediateBoards.getColumnCount(); i++) {
+            for (int j = 0; j < intermediateBoards.getColumnCount(); j++) {
+                if(!intermediates.isEmpty()){
+                    Board b = intermediates.pop();
+                    intermediateBoards.add(new Label(b.toGrid()), i, j);
+                }
+            }
+        }
         tableroActual.getCells()[play[0]][play[1]] = symbol;
         tableroActual.nextTurn();
         GameMaster.setCrossTurn(!GameMaster.isCrossTurn());
@@ -280,13 +299,13 @@ public class BoardController implements Initializable {
             computerMove();
         }
     }
-    
+
     @FXML
-    private void giveTip(){
-       int[] play = MinMaxer.minmax(tableroActual, computer, human, true);
-       grid[play[0]][play[1]].setStyle("-fx-background-color: #2ecc71; -fx-text-fill: white;");
+    private void giveTip() {
+        int[] play = MinMaxer.minmax(tableroActual, computer, human, true);
+        grid[play[0]][play[1]].setStyle("-fx-background-color: #2ecc71; -fx-text-fill: white;");
     }
-    
+
     public static void setHardMode(boolean hardMode) {
         BoardController.hardMode = hardMode;
     }

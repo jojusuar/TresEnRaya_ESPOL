@@ -6,6 +6,8 @@ package modelo;
 
 import estructuras.Tree;
 import java.util.Comparator;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.Stack;
@@ -19,6 +21,8 @@ public class MinMaxer {
     private static Comparator<Board> cmpUtility = (Board b1, Board b2) -> {
         return b2.getUtility() - b1.getUtility();
     };
+
+    private static Stack<Board> intermediateBoards = new Stack<>();
 
     public static Tree<Board> boardTreeBuilder(Board current) {
         boolean crossturn = GameMaster.isCrossTurn();
@@ -64,9 +68,11 @@ public class MinMaxer {
         stack.push(tree);
         while (!stack.isEmpty()) {
             Tree<Board> intermediate = stack.pop();
+            boolean hasLeafs = false;
             int min = Integer.MAX_VALUE;
             for (Tree<Board> children : intermediate.getSubtrees()) {
                 if (children.isLeaf()) {
+                    hasLeafs = true;
                     Board leafBoard = children.getRoot();
                     int utility = leafBoard.utilityFunction(human, computer, hard);
                     if (utility < min) {
@@ -76,7 +82,10 @@ public class MinMaxer {
                     stack.push(children);
                 }
             }
-            intermediate.getRoot().setUtility(min);
+            if (hasLeafs) {
+                intermediate.getRoot().setUtility(min);
+                intermediateBoards.push(intermediate.getRoot());
+            }
         }
         Queue<Board> max = new PriorityQueue(cmpUtility);
         for (Tree<Board> intermediate : tree.getSubtrees()) {
@@ -119,4 +128,11 @@ public class MinMaxer {
 //        bestMoveCoordinates[1] = bestBoard.getChoiceY();
 //        return bestMoveCoordinates;
 //    }
+    public static Stack<Board> getIntermediateBoards() {
+        return intermediateBoards;
+    }
+
+    public static void setIntermediateBoards(Stack<Board> s) {
+        intermediateBoards = s;
+    }
 }
