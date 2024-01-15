@@ -195,6 +195,23 @@ public class Board implements Serializable {
                 + "**************************************";
         return representation;
     }
+    
+    public String toGrid() {
+        
+        Board toPrint = this.getCopy();
+        toPrint.utility = this.utility;
+        for (int i = 0; i < toPrint.cells.length; i++) {
+            for (int j = 0; j < toPrint.cells.length; j++) {
+                if (toPrint.cells[i][j] == null) {
+                    toPrint.cells[i][j] = new Blank();
+                }
+            }
+        }
+        String representation = "" + toPrint.cells[0][0] + "|" + toPrint.cells[1][0] + "|" + toPrint.cells[2][0] + "\n" + "---------------" + "\n" + toPrint.cells[0][1] + "|" + toPrint.cells[1][1] + "|" + toPrint.cells[2][1] + "\n" + "---------------" + "\n" + toPrint.cells[0][2] + "|" + toPrint.cells[1][2] + "|" + toPrint.cells[2][2] + "\n"+ "utilidad = "+toPrint.utility;
+        return representation;
+    }
+    
+    
 }
 
 class BoardComparator implements Comparator<Board>, Serializable{
