@@ -11,6 +11,7 @@ import java.net.URL;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.Stack;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
@@ -257,8 +258,10 @@ public class BoardController implements Initializable {
     }
 
     private void computerMove() {
+    Platform.runLater(() -> {
         showBoard();
         Symbol symbol = cross;
+
         if (!GameMaster.isCrossTurn()) {
             symbol = circle;
         }
@@ -266,6 +269,14 @@ public class BoardController implements Initializable {
         int[] play = MinMaxer.minmax(tableroActual, human, computer, hardMode);
         intermediateBoards.getChildren().clear();
         Stack<Board> intermediates = MinMaxer.getIntermediateBoards();
+
+        try {
+            // Agregar una pausa de 2 segundos
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
         for (int i = 0; i < intermediateBoards.getColumnCount(); i++) {
             for (int j = 0; j < intermediateBoards.getColumnCount(); j++) {
                 if (!intermediates.isEmpty()) {
@@ -274,31 +285,49 @@ public class BoardController implements Initializable {
                 }
             }
         }
+
         tableroActual.getCells()[play[0]][play[1]] = symbol;
         tableroActual.nextTurn();
         GameMaster.setCrossTurn(!GameMaster.isCrossTurn());
+
         showBoard();
+
         int i = checkGame();
         if (autoplay && i == -1) {
             computer2Move();
         }
-    }
-
+    });
+}
+    
     private void computer2Move() {
+    Platform.runLater(() -> {
         Symbol symbol = cross;
+
         if (!GameMaster.isCrossTurn()) {
             symbol = circle;
         }
+
         int[] play = MinMaxer.minmax(tableroActual, computer, human, hardMode);
+
+        try {
+            // Agregar una pausa de 2 segundos
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
         tableroActual.getCells()[play[0]][play[1]] = symbol;
         tableroActual.nextTurn();
         GameMaster.setCrossTurn(!GameMaster.isCrossTurn());
+
         showBoard();
+
         int i = checkGame();
         if (autoplay && i == -1) {
             computerMove();
         }
-    }
+    });
+}
 
     @FXML
     private void giveTip() {
