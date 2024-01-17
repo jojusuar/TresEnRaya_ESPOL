@@ -8,10 +8,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
-import java.util.List;
 import java.util.Optional;
-import java.util.Queue;
-import java.util.Random;
 import java.util.ResourceBundle;
 import java.util.Stack;
 import javafx.fxml.FXML;
@@ -87,6 +84,10 @@ public class BoardController implements Initializable {
 
     private static boolean hardMode;
 
+    private static boolean player1First;
+
+    private static boolean startedAsCross;
+
     private static boolean againstComputer;
 
     private static boolean autoplay;
@@ -98,10 +99,8 @@ public class BoardController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        Random random = new Random();
         if (tableroActual == null) {
             tableroActual = new Board();
-            GameMaster.setCrossTurn(random.nextBoolean());
         } else {
             loaded = true;
             GameMaster.setCrossTurn(tableroActual.isCrossTurnWhenSaved());
@@ -128,15 +127,15 @@ public class BoardController implements Initializable {
         setButtonPos(button9, 2, 2);
         if (loaded) {
             showBoard();
-        }
-        if (againstComputer && !loaded) {
-            boolean computerFirst = random.nextBoolean();
-            if (computerFirst) {
-                Class temp = human;
-                human = computer;
-                computer = temp;
-                computerMove();
+            if (!startedAsCross && GameMaster.isCrossTurn()) {
+                startedAsCross = !startedAsCross;
             }
+        }
+        if (againstComputer && !loaded && !player1First) {
+            Class temp = human;
+            human = computer;
+            computer = temp;
+            computerMove();
         }
         if (autoplay) {
             computer2Move();
@@ -149,6 +148,7 @@ public class BoardController implements Initializable {
         autoplay = false;
         againstComputer = false;
         loaded = false;
+        startedAsCross = false;
         tableroActual = null;
         App.setRoot("menu");
     }
@@ -268,7 +268,7 @@ public class BoardController implements Initializable {
         Stack<Board> intermediates = MinMaxer.getIntermediateBoards();
         for (int i = 0; i < intermediateBoards.getColumnCount(); i++) {
             for (int j = 0; j < intermediateBoards.getColumnCount(); j++) {
-                if(!intermediates.isEmpty()){
+                if (!intermediates.isEmpty()) {
                     Board b = intermediates.pop();
                     intermediateBoards.add(new Label(b.toGrid()), i, j);
                 }
@@ -302,12 +302,49 @@ public class BoardController implements Initializable {
 
     @FXML
     private void giveTip() {
-        int[] play = MinMaxer.minmax(tableroActual, computer, human, true);
-        grid[play[0]][play[1]].setStyle("-fx-background-color: #2ecc71; -fx-text-fill: white;");
+        if (againstComputer) {
+            int[] play = MinMaxer.minmax(tableroActual, computer, human, hardMode);
+            grid[play[0]][play[1]].setStyle("-fx-background-color: #2ecc71; -fx-text-fill: white;");
+        } else {
+            boolean current = GameMaster.isCrossTurn();
+            if (startedAsCross) {
+                if (current) {
+                    int[] reply = MinMaxer.minmax(tableroActual, computer, human, hardMode);
+                    grid[reply[0]][reply[1]].setStyle("-fx-background-color: #2ecc71; -fx-text-fill: white;");
+                    current = !current;
+                } else {
+                    int[] reply = MinMaxer.minmax(tableroActual, human, computer, hardMode);
+                    grid[reply[0]][reply[1]].setStyle("-fx-background-color: #2ecc71; -fx-text-fill: white;");
+                    current = !current;
+                }
+            } else {
+                if (!current) {
+                    int[] reply = MinMaxer.minmax(tableroActual, computer, human, hardMode);
+                    grid[reply[0]][reply[1]].setStyle("-fx-background-color: #2ecc71; -fx-text-fill: white;");
+                    current = !current;
+                } else {
+                    int[] reply = MinMaxer.minmax(tableroActual, human, computer, hardMode);
+                    grid[reply[0]][reply[1]].setStyle("-fx-background-color: #2ecc71; -fx-text-fill: white;");
+                    current = !current;
+                }
+            }
+        }
     }
 
     public static void setHardMode(boolean hardMode) {
         BoardController.hardMode = hardMode;
+    }
+
+    static boolean isAgainstComputer() {
+        return againstComputer;
+    }
+
+    public static void setPlayer1First(boolean player1First) {
+        BoardController.player1First = player1First;
+    }
+
+    public static void setStartedAsCross(boolean started) {
+        BoardController.startedAsCross = started;
     }
 
     public static void setAgainstComputer(boolean againstComputer) {

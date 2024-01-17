@@ -22,6 +22,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import modelo.Board;
+import modelo.GameMaster;
 import util.Memory;
 import util.Resolution;
 
@@ -32,12 +33,23 @@ import util.Resolution;
  */
 public class MenuController implements Initializable {
 
+    @FXML
+    Button newButton;
+    @FXML
+    Button loadButton;
+
     /**
      * Initializes the controller class.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         Memory.load();
+        newButton.setOnAction(eh -> {
+            gameSettings(false);
+        });
+        loadButton.setOnAction(eh -> {
+            loadGame();
+        });
     }
 
     private void newGame() {
@@ -49,7 +61,7 @@ public class MenuController implements Initializable {
     }
 
     @FXML
-    private void gameSettings() {
+    private void gameSettings(boolean loading) {
         ToggleGroup difficultyToggle = new ToggleGroup();
         ToggleGroup modeToggle = new ToggleGroup();
         RadioButton normalButton = new RadioButton("Normal");
@@ -74,25 +86,90 @@ public class MenuController implements Initializable {
         settings.getChildren().addAll(difficulty, gameMode);
         settings.setAlignment(Pos.CENTER);
         VBox layout = new VBox(40);
-        Button start = new Button("Jugar");
-        start.setOnAction(ev -> {
+        Button next = new Button("Siguiente");
+        next.setOnAction(ev -> {
             RadioButton selectedDifficulty = (RadioButton) difficultyToggle.getSelectedToggle();
             if (selectedDifficulty == hardButton) {
                 BoardController.setHardMode(true);
             }
             RadioButton selectedMode = (RadioButton) modeToggle.getSelectedToggle();
+            if (selectedMode == pvpButton) {
+                if (loading) {
+                    newGame();
+                } else {
+                    selectPlayOrder();
+                }
+            }
             if (selectedMode == computerButton) {
                 BoardController.setAgainstComputer(true);
+                if (loading) {
+                    newGame();
+                } else {
+                    selectPlayOrder();
+                }
+
             } else if (selectedMode == autoplayButton) {
                 BoardController.setAutoplay(true);
+                newGame();
             }
-            newGame();
             newGameStage.close();
         });
-        layout.getChildren().addAll(settings, start);
+        layout.getChildren().addAll(settings, next);
         layout.setAlignment(Pos.CENTER);
         newGameStage.setScene(new Scene(layout, 400, 200));
         newGameStage.show();
+    }
+
+    private void selectPlayOrder() {
+        Stage playOrderStage = new Stage();
+        playOrderStage.setTitle("Configuración del juego");
+        ToggleGroup orderToggle = new ToggleGroup();
+        ToggleGroup symbolToggle = new ToggleGroup();
+        RadioButton playerButton = new RadioButton("Jugador");
+        playerButton.setToggleGroup(orderToggle);
+        RadioButton adversaryButton = new RadioButton("Jugador 2");
+        if (BoardController.isAgainstComputer()) {
+            adversaryButton.setText("Computadora");
+        }
+        adversaryButton.setToggleGroup(orderToggle);
+        orderToggle.selectToggle(playerButton);
+        RadioButton crossButton = new RadioButton("Cruz");
+        crossButton.setToggleGroup(symbolToggle);
+        RadioButton circleButton = new RadioButton("Círculo");
+        circleButton.setToggleGroup(symbolToggle);
+        symbolToggle.selectToggle(crossButton);
+        VBox order = new VBox(10);
+        order.getChildren().addAll(new Label("Primera jugada"), playerButton, adversaryButton);
+        VBox symbol = new VBox(10);
+        symbol.getChildren().addAll(new Label("Ficha de inicio"), crossButton, circleButton);
+        HBox settings = new HBox(40);
+        settings.getChildren().addAll(order, symbol);
+        settings.setAlignment(Pos.CENTER);
+        VBox layout = new VBox(40);
+        Button start = new Button("Jugar");
+        start.setOnAction(ev -> {
+            RadioButton selectedOrder = (RadioButton) orderToggle.getSelectedToggle();
+            if (selectedOrder == playerButton) {
+                BoardController.setPlayer1First(true);
+            } else {
+                BoardController.setPlayer1First(false);
+            }
+            RadioButton selectedSymbol = (RadioButton) symbolToggle.getSelectedToggle();
+            if (selectedSymbol == crossButton) {
+                GameMaster.setCrossTurn(true);
+                BoardController.setStartedAsCross(true);
+            } else {
+                GameMaster.setCrossTurn(false);
+                BoardController.setStartedAsCross(false);
+            }
+            newGame();
+            playOrderStage.close();
+        });
+        layout.getChildren().addAll(settings, start);
+        layout.setAlignment(Pos.CENTER);
+        playOrderStage.setScene(new Scene(layout, 400, 200));
+        playOrderStage.show();
+
     }
 
     @FXML
@@ -104,7 +181,7 @@ public class MenuController implements Initializable {
             HBox row = new HBox(20);
             Label boardLbl = new Label(board.toString());
             boardLbl.setOnMouseClicked(ev -> {
-                gameSettings();
+                gameSettings(true);
                 Board copy = board.getCopy();;
                 BoardController.setTableroActual(copy);
                 savedBoardsStage.close();
@@ -123,13 +200,13 @@ public class MenuController implements Initializable {
                     Memory.deleteBoard(board);
                     Memory.save();
                     games.getChildren().remove(row);
-                    
+
                 }
                 confirmationAlert.close();
             });
             games.getChildren().add(row);
         }
-        Scene scene = new Scene(games, 300, Resolution.getResY()*0.66);
+        Scene scene = new Scene(games, 300, Resolution.getResY() * 0.66);
         savedBoardsStage.setTitle("Tableros guardados");
         savedBoardsStage.setScene(scene);
         savedBoardsStage.show();
